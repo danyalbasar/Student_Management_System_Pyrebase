@@ -67,8 +67,8 @@ def view():
 		data = db.child("student").get()
 		if data:
 			for d in data.each():
-				if d.val() is None:
-					continue
+				#if d.val() is None:
+					#continue
 				info = str(d.val()) + "\n"
 				vw_st_data.insert(INSERT, info)
 		else:
