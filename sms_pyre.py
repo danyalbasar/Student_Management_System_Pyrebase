@@ -2,6 +2,9 @@ from pyrebase import *
 from tkinter import *
 from tkinter.messagebox import *
 from tkinter.scrolledtext import *
+import matplotlib.pyplot as plt
+import requests
+import bs4
 
 firebaseConfig = {
 	"apiKey": "AIzaSyA5mqnUwH0Vwzq1IiAVbIattmtlu0DKwFI",
@@ -49,7 +52,7 @@ def add():
 			showerror("Error", "Roll No Already Exists")
 		else:
 			info = {"rno": int(rno), "name": name, "marks": int(marks)}
-			db.child("student").child(int(rno)).set(info)
+			db.child("student").child(rno).set(info)
 			showinfo("Success", "Record created")
 		
 		aw_ent_rno.delete(0, END)
@@ -65,10 +68,11 @@ def view():
 	info = {}
 	try:
 		data = db.child("student").get()
-		if data:
+		#print(data.val())
+		if data.pyres:
 			for d in data.each():
-				#if d.val() is None:
-					#continue
+				'''if d.val() is None:
+					continue'''
 				info = str(d.val()) + "\n"
 				vw_st_data.insert(INSERT, info)
 		else:
@@ -90,6 +94,26 @@ def f7():
 def f8():
 	main_window.deiconify()
 	delete_window.withdraw()
+def charts():
+	try:
+		data = db.child("student").get()
+		name = []
+		marks = []
+		if data.pyres:
+			for d in data.each():
+				info = str(d.val()) + "\n"
+		else:
+			showerror("Error", "No data")
+
+		plt.bar(name, marks, width=0.7, color=["red", "green", "blue"])
+		plt.ylim(0, 105)
+		plt.xlabel("Students")
+		plt.ylabel("Marks")
+		plt.title("Batch Information")
+		plt.show()
+
+	except Exception as e:
+		showerror("Error", str(e))
 def update():
 	info = {}
 	try:
@@ -112,9 +136,9 @@ def update():
 			uw_ent_marks.focus()
 			return
 		data = db.child("student").get()
-		if data.pyres is not None and rno in data.val():
+		if data.pyres is not None and rno in data.val() :
 			info = {"rno": int(rno), "name": name, "marks": int(marks)}
-			db.child("student").child(int(rno)).update(info)
+			db.child("student").child(rno).update(info)
 			showinfo("Success", "Record updated")
 		else:
 			showerror("Error","Record not found")
@@ -135,7 +159,7 @@ def delete():
 			return
 		data = db.child("student").get()
 		if data.pyres is not None and rno in data.val():
-			db.child("student").child(int(rno)).remove()
+			db.child("student").child(rno).remove()
 			showinfo("Success","Record deleted")
 		else:
 			showerror("Error","Record not found")
@@ -149,6 +173,56 @@ main_window.title("S. M. S")
 main_window.geometry("500x530+650+225")
 main_window.configure(bg="antique white")
 
+try:
+	wa = "https://ipinfo.io/"
+	res = requests.get(wa)
+	data = res.json()
+
+	location_name = "Location: " + data['city'] + "," + " " + data['country']
+
+except Exception as e:
+	print("Issue", e)
+	location_name = "Location: Error\t "
+try:
+	api_key = "6aec4029e4a643f15b82009ac24ae555"
+	base_url = "http://api.openweathermap.org/data/2.5/weather?q="
+	city_name = "Mumbai"
+
+	complete_url = base_url + city_name + "&appid=" + api_key + "&units=metric"
+
+	res = requests.get(complete_url)
+	data = res.json()
+
+	tmp = " Temp: " + str(data['main']['temp']) + " °C"
+
+except Exception as e:
+	print("Issue", e)
+	tmp = "       Temp: Error"
+try:
+	wa = "https://www.brainyquote.com/quote_of_the_day"
+	res = requests.get(wa)
+	
+	data = bs4.BeautifulSoup(res.text, "html.parser")
+
+	info = data.find("img", {"class":"p-qotd"})
+
+	quote = "QOTD: " + info["alt"]
+
+except Exception as e:
+	print("Issue", e)
+	quote = "QOTD: Error "
+
+fa = ("Arial", 15)
+
+mw_frm_loc_tmp = Frame(main_window, bd=2, relief=SOLID, bg="antique white")
+mw_frm_loc_tmp.place(x=11.5, y=370, width=475, height=50)
+mw_lbl_loc = Label(mw_frm_loc_tmp, text=location_name + "                    " + tmp, font=fa, bg="antique white", pady=7, padx=5)
+mw_lbl_loc.grid(pady=3)
+mw_frm_qotd = Frame(main_window, bd=2, relief=SOLID, bg="antique white")
+mw_frm_qotd.place(x=11.5, y=430, width=475, height=90)
+mw_lbl_qotd = Label(mw_frm_qotd, text=quote, font=fa, bg="antique white", wraplength=475, pady=7, padx=5)
+mw_lbl_qotd.grid(pady=2)
+
 f = ("Arial", 18, "bold")
 
 mw_btn_add = Button(main_window, text="Add", bd=3.5, font=f, width=10, command=f1)
@@ -159,6 +233,8 @@ mw_btn_update = Button(main_window, text="Update", bd=3.5, font=f, width=10, com
 mw_btn_update.pack(pady=8)
 mw_btn_delete = Button(main_window, text="Delete", bd=3.5, font=f, width=10, command=f7)
 mw_btn_delete.pack(pady=8)
+mw_btn_charts = Button(main_window, text="Charts", bd=3.5, font=f, width=10, command=charts)
+mw_btn_charts.pack(pady=8)
 
 add_window = Toplevel(main_window, bg="antique white")
 add_window.title("Add Stu.")
@@ -194,15 +270,15 @@ vw_btn_back.pack(pady=8)
 
 view_window.withdraw()
 
-update_window = Toplevel(main_window, bg="misty rose")
+update_window = Toplevel(main_window, bg="antique white")
 update_window.title("Update Stu.")
 update_window.geometry("500x530+650+225")
 
-uw_lbl_rno = Label(update_window, text="Enter Roll No:", font=f, bg="misty rose")
+uw_lbl_rno = Label(update_window, text="Enter Roll No:", font=f, bg="antique white")
 uw_ent_rno = Entry(update_window, width=29, bd=5, font=f)
-uw_lbl_name = Label(update_window, text="Enter Name:", font=f, bg="misty rose")
+uw_lbl_name = Label(update_window, text="Enter Name:", font=f, bg="antique white")
 uw_ent_name = Entry(update_window, width=29, bd=5, font=f)
-uw_lbl_marks = Label(update_window, text="Enter Marks:", font=f, bg="misty rose")
+uw_lbl_marks = Label(update_window, text="Enter Marks:", font=f, bg="antique white")
 uw_ent_marks = Entry(update_window, width=29, bd=5, font=f)
 uw_btn_update = Button(update_window, text="Update", width=10, bd=3.5, font=f, command=update)
 uw_btn_back = Button(update_window, text="Back", width=10, bd=3.5, font=f, command=f6)
