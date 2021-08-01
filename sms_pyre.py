@@ -95,17 +95,26 @@ def f8():
 	main_window.deiconify()
 	delete_window.withdraw()
 def charts():
+	info = {}
 	try:
 		data = db.child("student").get()
-		name = []
-		marks = []
+		name = ""
+		marks = int()
+		name_list = []
+		marks_list = []
 		if data.pyres:
 			for d in data.each():
-				info = str(d.val()) + "\n"
+				info = d.val()
+				name = info.get("name")
+				print(name)
+				marks = info.get("marks")
+				print(marks)
+				name_list.append(name)
+				marks_list.append(marks)
 		else:
 			showerror("Error", "No data")
 
-		plt.bar(name, marks, width=0.7, color=["red", "green", "blue"])
+		plt.bar(name_list, marks_list, width=0.7, color=["red", "green", "blue"])
 		plt.ylim(0, 105)
 		plt.xlabel("Students")
 		plt.ylabel("Marks")
