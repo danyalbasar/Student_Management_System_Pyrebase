@@ -14,7 +14,7 @@ firebaseConfig = {
 	"storageBucket": "studentmanagementsystem-7c64b.appspot.com",
 	"messagingSenderId": "412244357570",
 	"appId": "1:412244357570:web:366e023e228399a522a65b"
-	};
+	}
 
 firebase = initialize_app(firebaseConfig)
 db = firebase.database()
@@ -106,9 +106,7 @@ def charts():
 			for d in data.each():
 				info = d.val()
 				name = info.get("name")
-				print(name)
 				marks = info.get("marks")
-				print(marks)
 				name_list.append(name)
 				marks_list.append(marks)
 		else:
