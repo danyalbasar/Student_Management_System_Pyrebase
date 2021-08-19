@@ -7,13 +7,13 @@ import requests
 import bs4
 
 firebaseConfig = {
-	"apiKey": "AIzaSyA5mqnUwH0Vwzq1IiAVbIattmtlu0DKwFI",
-	"authDomain": "studentmanagementsystem-7c64b.firebaseapp.com",
-	"databaseURL": "https://studentmanagementsystem-7c64b-default-rtdb.asia-southeast1.firebasedatabase.app",
-	"projectId": "studentmanagementsystem-7c64b",
-	"storageBucket": "studentmanagementsystem-7c64b.appspot.com",
-	"messagingSenderId": "412244357570",
-	"appId": "1:412244357570:web:366e023e228399a522a65b"
+	"apiKey": "AIzaSyCr3r751zMEfGrq-LAvsANrmXbc5fy4v1o",
+	"authDomain": "studentmanagementsystem-ea704.firebaseapp.com",
+	"databaseURL": "https://studentmanagementsystem-ea704-default-rtdb.asia-southeast1.firebasedatabase.app",
+	"projectId": "studentmanagementsystem-ea704",
+	"storageBucket": "studentmanagementsystem-ea704.appspot.com",
+	"messagingSenderId": "315979969860",
+	"appId": "1:315979969860:web:12dde2385bd9e6726ad311"
 	}
 
 firebase = initialize_app(firebaseConfig)
@@ -27,23 +27,47 @@ def f2():
 	add_window.withdraw()
 
 def add():
-	info = {}
 	try:
 		rno = aw_ent_rno.get()
 		name = aw_ent_name.get()
 		marks = aw_ent_marks.get()
-		if (not rno.isdigit()) or (len(rno) == 0) or (int(rno) <= 0):
-			showerror("Roll No Issue", "Invalid roll no") 		
+		if (len(rno) == 0):
+			showerror("Roll No Issue", "Roll No cannot be empty") 		
 			aw_ent_rno.delete(0, END)
 			aw_ent_rno.focus()
 			return
-		if (not name.isalpha()) or (len(name) < 2):
-			showerror("Name Issue", "Invalid name") 
+		if (not rno.isdigit()):
+			showerror("Roll No Issue", "Roll No should be a number only") 		
+			aw_ent_rno.delete(0, END)
+			aw_ent_rno.focus()
+			return
+		if len(name) == 0:
+			showerror("Name Issue", "Name cannot be empty") 
 			aw_ent_name.delete(0, END)
 			aw_ent_name.focus()
 			return
-		if (not marks.isdigit()) or (len(marks) == 0) or (int(marks) < 0) or (int(marks) > 100): 
-			showerror("Marks Issue", "Invalid marks")
+		if (not name.isalpha()):
+			showerror("Name Issue", "Name cannot be a number") 
+			aw_ent_name.delete(0, END)
+			aw_ent_name.focus()
+			return
+		if (len(name) < 2):
+			showerror("Name Issue", "Name cannot be less than two letters") 
+			aw_ent_name.delete(0, END)
+			aw_ent_name.focus()
+			return
+		if (len(marks) == 0):
+			showerror("Marks Issue", "Marks cannot be empty")
+			aw_ent_marks.delete(0, END)
+			aw_ent_marks.focus()
+			return
+		if (not marks.isdigit()):
+			showerror("Marks Issue", "Marks should be in numbers only")
+			aw_ent_marks.delete(0, END)
+			aw_ent_marks.focus()
+			return
+		if (int(marks) < 0) or (int(marks) > 100):
+			showerror("Marks Issue", "Marks should be a number between 0 and 100")
 			aw_ent_marks.delete(0, END)
 			aw_ent_marks.focus()
 			return
@@ -68,12 +92,9 @@ def view():
 	info = {}
 	try:
 		data = db.child("student").get()
-		#print(data.val())
 		if data.pyres:
 			for d in data.each():
-				'''if d.val() is None:
-					continue'''
-				info = str(d.val()) + "\n"
+				info = str(d.val()).replace("{","").replace("}", "").replace("'","").replace(","," |") + "\n"
 				vw_st_data.insert(INSERT, info)
 		else:
 			showerror("Error", "No data")
@@ -127,18 +148,43 @@ def update():
 		rno = uw_ent_rno.get()
 		name = uw_ent_name.get()
 		marks = uw_ent_marks.get()
-		if (not rno.isdigit()) or (len(rno) == 0) or (int(rno) <= 0):
-			showerror("Roll No Issue", "Invalid roll no") 		
+		if (len(rno) == 0):
+			showerror("Roll No Issue", "Roll No cannot be empty") 		
 			uw_ent_rno.delete(0, END)
 			uw_ent_rno.focus()
 			return
-		if (not name.isalpha()) or (len(name) < 2):
-			showerror("Name Issue", "Invalid name") 
+		if (not rno.isdigit()):
+			showerror("Roll No Issue", "Roll No should be a number only") 		
+			uw_ent_rno.delete(0, END)
+			uw_ent_rno.focus()
+			return
+		if len(name) == 0:
+			showerror("Name Issue", "Name cannot be empty") 
 			uw_ent_name.delete(0, END)
 			uw_ent_name.focus()
 			return
-		if (not marks.isdigit()) or (len(marks) == 0) or (int(marks) < 0) or (int(marks) > 100): 
-			showerror("Marks Issue", "Invalid marks")
+		if (not name.isalpha()):
+			showerror("Name Issue", "Name cannot be a number") 
+			uw_ent_name.delete(0, END)
+			uw_ent_name.focus()
+			return
+		if (len(name) < 2):
+			showerror("Name Issue", "Name cannot be less than two letters") 
+			uw_ent_name.delete(0, END)
+			uw_ent_name.focus()
+			return
+		if (len(marks) == 0):
+			showerror("Marks Issue", "Marks cannot be empty")
+			uw_ent_marks.delete(0, END)
+			uw_ent_marks.focus()
+			return
+		if (not marks.isdigit()):
+			showerror("Marks Issue", "Marks should be in numbers only")
+			uw_ent_marks.delete(0, END)
+			uw_ent_marks.focus()
+			return
+		if (int(marks) < 0) or (int(marks) > 100):
+			showerror("Marks Issue", "Marks should be a number between 0 and 100")
 			uw_ent_marks.delete(0, END)
 			uw_ent_marks.focus()
 			return
@@ -159,8 +205,18 @@ def update():
 def delete():
 	try:
 		rno = dw_ent_rno.get()
-		if (not rno.isdigit()) or (len(rno) == 0) or (int(rno) <= 0):
-			showerror("Roll No Issue", "Invalid roll no") 		
+		if (len(rno) == 0):
+			showerror("Roll No Issue", "Roll No cannot be empty") 		
+			uw_ent_rno.delete(0, END)
+			uw_ent_rno.focus()
+			return
+		if (not rno.isdigit()):
+			showerror("Roll No Issue", "Roll No should be a number only") 		
+			dw_ent_rno.delete(0, END)
+			dw_ent_rno.focus()
+			return
+		if (len(rno) == 0) or (int(rno) <= 0):
+			showerror("Roll No Issue", "Roll No should be a number between 0 and 100") 		
 			dw_ent_rno.delete(0, END)
 			dw_ent_rno.focus()
 			return
@@ -178,7 +234,8 @@ def delete():
 main_window = Tk()
 main_window.title("S. M. S")
 main_window.geometry("500x530+650+225")
-main_window.configure(bg="antique white")
+main_window.configure(bg="DarkSeaGreen1")
+main_window.resizable(False, False)
 
 try:
 	wa = "https://ipinfo.io/"
@@ -221,13 +278,13 @@ except Exception as e:
 
 fa = ("Arial", 15)
 
-mw_frm_loc_tmp = Frame(main_window, bd=2, relief=SOLID, bg="antique white")
+mw_frm_loc_tmp = Frame(main_window, bd=2, relief=SOLID, bg="DarkSeaGreen1")
 mw_frm_loc_tmp.place(x=11.5, y=370, width=475, height=50)
-mw_lbl_loc = Label(mw_frm_loc_tmp, text=location_name + "                    " + tmp, font=fa, bg="antique white", pady=7, padx=5)
+mw_lbl_loc = Label(mw_frm_loc_tmp, text=location_name + "                    " + tmp, font=fa, bg="DarkSeaGreen1", pady=7, padx=5)
 mw_lbl_loc.grid(pady=3)
-mw_frm_qotd = Frame(main_window, bd=2, relief=SOLID, bg="antique white")
+mw_frm_qotd = Frame(main_window, bd=2, relief=SOLID, bg="DarkSeaGreen1")
 mw_frm_qotd.place(x=11.5, y=430, width=475, height=90)
-mw_lbl_qotd = Label(mw_frm_qotd, text=quote, font=fa, bg="antique white", wraplength=475, pady=7, padx=5)
+mw_lbl_qotd = Label(mw_frm_qotd, text=quote, font=fa, bg="DarkSeaGreen1", wraplength=450, pady=7, padx=5)
 mw_lbl_qotd.grid(pady=2)
 
 f = ("Arial", 18, "bold")
@@ -243,15 +300,16 @@ mw_btn_delete.pack(pady=8)
 mw_btn_charts = Button(main_window, text="Charts", bd=3.5, font=f, width=10, command=charts)
 mw_btn_charts.pack(pady=8)
 
-add_window = Toplevel(main_window, bg="antique white")
+add_window = Toplevel(main_window, bg="lightblue1")
 add_window.title("Add Stu.")
 add_window.geometry("500x530+650+225")
+add_window.resizable(False, False)
 
-aw_lbl_rno = Label(add_window, text="Enter Roll No:", font=f, bg="antique white")
+aw_lbl_rno = Label(add_window, text="Enter Roll No:", font=f, bg="lightblue1")
 aw_ent_rno = Entry(add_window, bd=5, width=29, font=f)
-aw_lbl_name = Label(add_window, text="Enter Name:", font=f, bg="antique white")
+aw_lbl_name = Label(add_window, text="Enter Name:", font=f, bg="lightblue1")
 aw_ent_name = Entry(add_window, bd=5, width=29, font=f)
-aw_lbl_marks = Label(add_window, text="Enter Marks:", font=f, bg="antique white")
+aw_lbl_marks = Label(add_window, text="Enter Marks:", font=f, bg="lightblue1")
 aw_ent_marks = Entry(add_window, width=29, bd=5, font=f)
 aw_btn_save = Button(add_window, text=" Save ", width=10, bd=3.5, font=f, command=add)
 aw_btn_back = Button(add_window, text="Back", width=10, bd=3.5, font=f, command=f2)
@@ -266,9 +324,10 @@ aw_btn_back.pack(pady=3)
 
 add_window.withdraw()
 
-view_window = Toplevel(main_window, bg="antique white")
+view_window = Toplevel(main_window, bg="lemon chiffon")
 view_window.title("View Stu.")
 view_window.geometry("500x530+650+225")
+view_window.resizable(False, False)
 
 vw_st_data = ScrolledText(view_window, width=33, height=12, font=f, bg="white")
 vw_btn_back = Button(view_window, text="Back", width=10, bd=3.5, font=f, command=f4)
@@ -277,15 +336,16 @@ vw_btn_back.pack(pady=8)
 
 view_window.withdraw()
 
-update_window = Toplevel(main_window, bg="antique white")
+update_window = Toplevel(main_window, bg="misty rose")
 update_window.title("Update Stu.")
 update_window.geometry("500x530+650+225")
+update_window.resizable(False, False)
 
-uw_lbl_rno = Label(update_window, text="Enter Roll No:", font=f, bg="antique white")
+uw_lbl_rno = Label(update_window, text="Enter Roll No:", font=f, bg="misty rose")
 uw_ent_rno = Entry(update_window, width=29, bd=5, font=f)
-uw_lbl_name = Label(update_window, text="Enter Name:", font=f, bg="antique white")
+uw_lbl_name = Label(update_window, text="Enter Name:", font=f, bg="misty rose")
 uw_ent_name = Entry(update_window, width=29, bd=5, font=f)
-uw_lbl_marks = Label(update_window, text="Enter Marks:", font=f, bg="antique white")
+uw_lbl_marks = Label(update_window, text="Enter Marks:", font=f, bg="misty rose")
 uw_ent_marks = Entry(update_window, width=29, bd=5, font=f)
 uw_btn_update = Button(update_window, text="Update", width=10, bd=3.5, font=f, command=update)
 uw_btn_back = Button(update_window, text="Back", width=10, bd=3.5, font=f, command=f6)
@@ -300,11 +360,12 @@ uw_btn_back.pack(pady=3)
 
 update_window.withdraw()
 
-delete_window = Toplevel(main_window, bg="antique white")
+delete_window = Toplevel(main_window, bg="lightblue1")
 delete_window.title("Delete Stu.")
 delete_window.geometry("500x530+650+225")
+delete_window.resizable(False, False)
 
-dw_lbl_rno = Label(delete_window, text="Enter Roll No:", font=f, bg="antique white")
+dw_lbl_rno = Label(delete_window, text="Enter Roll No:", font=f, bg="lightblue1")
 dw_ent_rno = Entry(delete_window, width=29, bd=5, font=f)
 dw_btn_delete = Button(delete_window, text="Delete", width=10, bd=3.5, font=f, command=delete)
 dw_btn_back = Button(delete_window, text="Back", width=10, bd=3.5, font=f, command=f8)
