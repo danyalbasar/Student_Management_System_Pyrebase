@@ -7,13 +7,13 @@ import requests
 import bs4
 
 firebaseConfig = {
-	"apiKey": "AIzaSyCr3r751zMEfGrq-LAvsANrmXbc5fy4v1o",
-	"authDomain": "studentmanagementsystem-ea704.firebaseapp.com",
-	"databaseURL": "https://studentmanagementsystem-ea704-default-rtdb.asia-southeast1.firebasedatabase.app",
-	"projectId": "studentmanagementsystem-ea704",
-	"storageBucket": "studentmanagementsystem-ea704.appspot.com",
-	"messagingSenderId": "315979969860",
-	"appId": "1:315979969860:web:12dde2385bd9e6726ad311"
+	"apiKey": "",
+	"authDomain": "",
+	"databaseURL": "",
+	"projectId": "",
+	"storageBucket": "",
+	"messagingSenderId": "",
+	"appId": ""
 	}
 
 firebase = initialize_app(firebaseConfig)
@@ -22,6 +22,7 @@ db = firebase.database()
 def f1():
 	add_window.deiconify()
 	main_window.withdraw()
+	
 def f2():
 	main_window.deiconify()
 	add_window.withdraw()
@@ -31,6 +32,7 @@ def add():
 		rno = aw_ent_rno.get()
 		name = aw_ent_name.get()
 		marks = aw_ent_marks.get()
+		
 		if (len(rno) == 0):
 			showerror("Roll No Issue", "Roll No cannot be empty") 		
 			aw_ent_rno.delete(0, END)
@@ -85,9 +87,11 @@ def add():
 		aw_ent_rno.focus()
 	except Exception as e:
 		showerror("Error", str(e))
+		
 def view():
 	view_window.deiconify()
-	main_window.withdraw() 		
+	main_window.withdraw()
+	
 	vw_st_data.delete(1.0, END)
 	info = {}
 	try:
@@ -95,26 +99,33 @@ def view():
 		if data.pyres:
 			for d in data.each():
 				info = str(d.val()).replace("{","").replace("}", "").replace("'","").replace(","," |") + "\n"
+				
 				vw_st_data.insert(INSERT, info)
 		else:
 			showerror("Error", "No data")
 	except Exception as e:
 		showerror("Error", str(e))
+		
 def f4():
 	main_window.deiconify()
 	view_window.withdraw()
+	
 def f5():
 	update_window.deiconify()
 	main_window.withdraw()
+	
 def f6():
 	main_window.deiconify()
 	update_window.withdraw()
+	
 def f7():
 	delete_window.deiconify()
 	main_window.withdraw()
+	
 def f8():
 	main_window.deiconify()
 	delete_window.withdraw()
+	
 def charts():
 	info = {}
 	try:
@@ -123,6 +134,7 @@ def charts():
 		marks = int()
 		name_list = []
 		marks_list = []
+		
 		if data.pyres:
 			for d in data.each():
 				info = d.val()
@@ -139,15 +151,16 @@ def charts():
 		plt.ylabel("Marks")
 		plt.title("Batch Information")
 		plt.show()
-
 	except Exception as e:
 		showerror("Error", str(e))
+		
 def update():
 	info = {}
 	try:
 		rno = uw_ent_rno.get()
 		name = uw_ent_name.get()
 		marks = uw_ent_marks.get()
+		
 		if (len(rno) == 0):
 			showerror("Roll No Issue", "Roll No cannot be empty") 		
 			uw_ent_rno.delete(0, END)
@@ -188,7 +201,9 @@ def update():
 			uw_ent_marks.delete(0, END)
 			uw_ent_marks.focus()
 			return
+		
 		data = db.child("student").get()
+		
 		if data.pyres is not None and rno in data.val() :
 			info = {"rno": int(rno), "name": name, "marks": int(marks)}
 			db.child("student").child(rno).update(info)
@@ -202,9 +217,11 @@ def update():
 		uw_ent_rno.focus()
 	except Exception as e:
 		showerror("Error", str(e))
+		
 def delete():
 	try:
 		rno = dw_ent_rno.get()
+		
 		if (len(rno) == 0):
 			showerror("Roll No Issue", "Roll No cannot be empty") 		
 			uw_ent_rno.delete(0, END)
@@ -220,12 +237,14 @@ def delete():
 			dw_ent_rno.delete(0, END)
 			dw_ent_rno.focus()
 			return
+		
 		data = db.child("student").get()
 		if data.pyres is not None and rno in data.val():
 			db.child("student").child(rno).remove()
 			showinfo("Success","Record deleted")
 		else:
 			showerror("Error","Record not found")
+			
 		dw_ent_rno.delete(0, END)
 		dw_ent_rno.focus()
 	except Exception as e:
@@ -243,10 +262,10 @@ try:
 	data = res.json()
 
 	location_name = "Location: " + data['city'] + "," + " " + data['country']
-
 except Exception as e:
 	print("Issue", e)
 	location_name = "Location: Error\t "
+	
 try:
 	api_key = "6aec4029e4a643f15b82009ac24ae555"
 	base_url = "http://api.openweathermap.org/data/2.5/weather?q="
@@ -258,10 +277,10 @@ try:
 	data = res.json()
 
 	tmp = " Temp: " + str(data['main']['temp']) + " °C"
-
 except Exception as e:
 	print("Issue", e)
 	tmp = "       Temp: Error"
+	
 try:
 	wa = "https://www.brainyquote.com/quote_of_the_day"
 	res = requests.get(wa)
@@ -271,7 +290,6 @@ try:
 	info = data.find("img", {"class":"p-qotd"})
 
 	quote = "QOTD: " + info["alt"]
-
 except Exception as e:
 	print("Issue", e)
 	quote = "QOTD: Error "
